@@ -3,7 +3,7 @@ import { createClient } from 'redis'
 const app = express();
 const client = createClient();
 const subscriber = createClient({
-    url:"http://localhost:6380/"
+    url: "redis://localhost:6379"
 })
 subscriber.connect()
 client.connect()
@@ -13,7 +13,8 @@ app.post("/submit",(req,res)=>{
     client.lPush("submissions",JSON.stringify({problemId,code,language}))
     return res.json({"success":true})
 })
-subscriber.on("publish",(data)=>{
-    console.log(data,"coming from pubsub \n");
+subscriber.subscribe("publish",(message) => {
+  console.log(message);
 })
+
 app.listen(8000)

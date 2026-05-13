@@ -1,7 +1,7 @@
 import { createClient } from 'redis'
 const client = createClient();
 const publisher = createClient({
-    url:"http://localhost:6380/"
+   url: "redis://localhost:6379"
 });
 async function main (){
     await client.connect();
@@ -10,7 +10,7 @@ async function main (){
         const res = await client.brPop("submissions",0);
         await new Promise((resolve)=>setTimeout(resolve,1000))
         console.log(res);
-        publisher.publish("publish",JSON.stringify(res))
+        await publisher.publish("publish",JSON.stringify(res))
     }
 }
 main()
